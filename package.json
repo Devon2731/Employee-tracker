@@ -11,7 +11,7 @@
       "type": "git",
       "url": "git@github.com-Devon2731/Employee-tracker"
     },
-    "author": "Rajeswari Marimuthu",
+    "author": "Devon Whitaker",
     "license": "ISC",
     "dependencies": {
       "console": "^0.7.2",
