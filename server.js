@@ -28,7 +28,7 @@ async function mainPrompt() {
       }
     });
 
-    switch (answers.likeToDo) {
+    switch (answers.likeToDo.toLowerCase()) {
       case 'view all departments':
         await displayAllDepts();
         break;
@@ -37,6 +37,30 @@ async function mainPrompt() {
         break;
       case 'view all employees':
         await displayAllEmployees();
+        break;
+      case 'add a new department':
+        await addDepartment();
+        break;
+      case 'add a new role':
+        await addRole();
+        break;
+      case 'add a new employee':
+        await addEmployee();
+        break;
+      case 'update an employee role':
+        await updateEmployeeRole();
+        break;
+      case 'update an employee manager':
+        await updateEmployeeManager();
+        break;
+      case 'delete an employee':
+        await deleteEmployee();
+        break;
+      case 'delete a role':
+        await deleteRole();
+        break;
+      case 'delete a department':
+        await deleteDepartment();
         break;
       case 'all done!!':
         console.log('Hope you loved using employee manager!!');
@@ -49,38 +73,197 @@ async function mainPrompt() {
     process.exit(1);
   }
 
-  return mainPrompt(); // Consider using a loop instead of recursion
+  return mainPrompt();
 }
 
 async function displayAllDepts() {
   try {
-    const depts = await Department.deptSelectAll();
+    const departmentInstance = new Department();
+    const depts = await departmentInstance.deptSelectAll();
     console.log('\n *** LIST OF DEPARTMENTS *** \n');
     console.table(depts);
+    console.log('All departments displayed successfully!');
   } catch (err) {
     console.error("Error while fetching and displaying departments", err.message);
+    process.exit(1);
   }
 }
 
 async function displayAllRoles() {
   try {
-    const roles = await Role.roleSelectAll();
+    const roleInstance = new Role();
+    const roles = await roleInstance.roleSelectAll();
     console.log('\n *** LIST OF ROLES ***\n');
     console.table(roles);
+    console.log('All roles displayed successfully!');
   } catch (error) {
     console.error('Error while fetching and displaying roles:', error.message);
+    process.exit(1);
   }
 }
 
 async function displayAllEmployees() {
   try {
-    const employees = await Employee.empSelectAll();
+    const employeeInstance = new Employee();
+    const employees = await employeeInstance.empSelectAll();
     console.log('\n *** LIST OF EMPLOYEES ***\n');
     console.table(employees);
+    console.log('All employees displayed successfully!');
   } catch (error) {
     console.error('Error while fetching and displaying employees:', error.message);
+    process.exit(1);
   }
 }
 
-// Start the program with the main prompt
+// ... (your existing code)
+
+async function addRole() {
+    try {
+      const roleQuestions = [
+        {
+          message: "Enter the role title:",
+          name: "roleTitle",
+          type: "input",
+        },
+        {
+          message: "Enter the salary for the role:",
+          name: "roleSalary",
+          type: "input",
+        },
+        {
+          message: "Enter the department ID for the role:",
+          name: "departmentId",
+          type: "input",
+        },
+      ];
+  
+      const answers = await inquirer.prompt(roleQuestions);
+      const roleInstance = new Role(
+        answers.roleTitle,
+        parseFloat(answers.roleSalary),
+        parseInt(answers.departmentId)
+      );
+  
+      await roleInstance.roleInsert();
+      console.log('Role added successfully!');
+    } catch (error) {
+      console.error('Error while adding a new role:', error.message);
+    }
+  }
+  
+  async function addEmployee() {
+    try {
+      const employeeQuestions = [
+        {
+          message: "Enter the first name:",
+          name: "firstName",
+          type: "input",
+        },
+        {
+          message: "Enter the last name:",
+          name: "lastName",
+          type: "input",
+        },
+        {
+          message: "Enter the role ID for the employee:",
+          name: "roleId",
+          type: "input",
+        },
+        {
+          message: "Enter the manager ID for the employee (or leave empty for none):",
+          name: "managerId",
+          type: "input",
+        },
+      ];
+  
+      const answers = await inquirer.prompt(employeeQuestions);
+      const employeeInstance = new Employee(
+        answers.firstName,
+        answers.lastName,
+        parseInt(answers.roleId),
+        answers.managerId ? parseInt(answers.managerId) : null
+      );
+  
+      await employeeInstance.empInsert();
+      console.log('Employee added successfully!');
+    } catch (error) {
+      console.error('Error while adding a new employee:', error.message);
+    }
+  }
+
+  async function updateEmployeeRole() {
+    try {
+      const employeeQuestions = [
+        {
+          message: "Enter the ID of the employee whose role you want to update:",
+          name: "employeeId",
+          type: "input",
+        },
+        {
+          message: "Enter the new role ID for the employee:",
+          name: "newRoleId",
+          type: "input",
+        },
+      ];
+  
+      const answers = await inquirer.prompt(employeeQuestions);
+  
+      const employeeInstance = new Employee();
+      const employeeId = parseInt(answers.employeeId);
+      const newRoleId = parseInt(answers.newRoleId);
+  
+      const employeeExists = await employeeInstance.doesEmployeeExist(employeeId);
+  
+      if (!employeeExists) {
+        console.log(`Employee with ID ${employeeId} does not exist.`);
+        return;
+      }
+  
+      await employeeInstance.updateEmployeeRole(employeeId, newRoleId);
+  
+      console.log(`Role for employee with ID ${employeeId} updated successfully.`);
+    } catch (error) {
+      console.error('Error while updating employee role:', error.message);
+    }
+  }
+
+  async function updateEmployeeManager() {
+    try {
+      const employeeQuestions = [
+        {
+          message: "Enter the ID of the employee whose manager you want to update:",
+          name: "employeeId",
+          type: "input",
+        },
+        {
+          message: "Enter the new manager ID for the employee (or leave empty for none):",
+          name: "newManagerId",
+          type: "input",
+        },
+      ];
+  
+      const answers = await inquirer.prompt(employeeQuestions);
+  
+      const employeeInstance = new Employee();
+      const employeeId = parseInt(answers.employeeId);
+      const newManagerId = answers.newManagerId ? parseInt(answers.newManagerId) : null;
+  
+      const employeeExists = await employeeInstance.doesEmployeeExist(employeeId);
+  
+      if (!employeeExists) {
+        console.log(`Employee with ID ${employeeId} does not exist.`);
+        return;
+      }
+  
+      await employeeInstance.updateEmployeeManager(employeeId, newManagerId);
+  
+      console.log(`Manager for employee with ID ${employeeId} updated successfully.`);
+    } catch (error) {
+      console.error('Error while updating employee manager:', error.message);
+    }
+  }
+  
+  
+  
+
 mainPrompt();
