@@ -262,8 +262,90 @@ async function addRole() {
       console.error('Error while updating employee manager:', error.message);
     }
   }
-  
-  
-  
 
-mainPrompt();
+  async function deleteEmployee() {
+    try {
+      const employeeQuestions = [
+        {
+          message: "Enter the ID of the employee you want to delete:",
+          name: "employeeId",
+          type: "input",
+        },
+      ];
+
+      const answers = await inquirer.prompt(employeeQuestions);
+      const employeeInstance = new Employee();
+      const employeeId = parseInt(answers.employeeId);
+
+      const employeeExists = await employeeInstance.doesEmployeeExist(employeeId);
+
+      if (!employeeExists) {
+        console.log(`Employee with ID ${employeeId} does not exist.`);
+        return;
+      }
+
+      await employeeInstance.deleteEmployee(employeeId);
+
+      console.log(`Employee with ID ${employeeId} deleted successfully.`);
+    } catch (error) {
+      console.error('Error while deleting employee:', error.message);
+    }
+  }
+
+  async function deleteRole() {
+    try {
+      const roleIdAnswer = await inquirer.prompt({
+        message: "Enter the ID of the role you want to delete:",
+        name: "roleId",
+        type: "input",
+      });
+  
+      const roleId = parseInt(roleIdAnswer.roleId);
+  
+      const roleInstance = new Role();
+  
+      // Check if the role with the given ID exists
+      const roleExists = await roleInstance.doesRoleExist(roleId);
+  
+      if (roleExists) {
+        // Role exists, proceed with deletion
+        await roleInstance.roleDelete(roleId);
+        console.log(`Role with ID ${roleId} deleted successfully!`);
+      } else {
+        console.log(`Role with ID ${roleId} does not exist.`);
+      }
+    } catch (error) {
+      console.error('Error while deleting role:', error.message);
+    }
+  }
+
+  async function deleteDepartment() {
+    try {
+      const departmentQuestions = [
+        {
+          message: "Enter the ID of the department you want to delete:",
+          name: "departmentId",
+          type: "input",
+        },
+      ];
+
+      const answers = await inquirer.prompt(departmentQuestions);
+      const departmentInstance = new Department();
+      const departmentId = parseInt(answers.departmentId);
+
+      const departmentExists = await departmentInstance.doesDepartmentExist(departmentId);
+
+      if (!departmentExists) {
+        console.log(`Department with ID ${departmentId} does not exist.`);
+        return;
+      }
+
+      await departmentInstance.deleteDepartment(departmentId);
+
+      console.log(`Department with ID ${departmentId} deleted successfully.`);
+    } catch (error) {
+         console.error('Error while deleting department:', error.message);
+    }
+  }
+  
+  mainPrompt();
