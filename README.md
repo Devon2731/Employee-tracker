@@ -1,14 +1,12 @@
 # Employee-tracker
 
-This command-line application is built to manage a company's employee database so employers can organize and plan business. Providing the ability to users to view all/add departments, view all/add/remove roles, and view all/add employees through cli by adopting object-oriented programming concepts.
+The Employee Management System is a command-line application that allows you to manage departments, roles, and employees in a company.
 
-# Tech Stack
+# Technologies Used
 
 - Node.js
 - MySQL
-- npm packages
-  - mysql2
-  - inquirer
+- inquirer
 
 # License
 
