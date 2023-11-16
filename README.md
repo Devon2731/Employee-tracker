@@ -19,6 +19,9 @@ MIT
 
 
 
-https://github.com/Devon2731/Employee-tracker/assets/141438012/30747502-f392-4094-b86f-882c2d20b694
+
+https://github.com/Devon2731/Employee-tracker/assets/141438012/03b56387-82d5-41d9-a659-7f08ab8d2d18
+
+
 
 
