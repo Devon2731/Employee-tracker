@@ -304,11 +304,9 @@ async function addRole() {
   
       const roleInstance = new Role();
   
-      // Check if the role with the given ID exists
       const roleExists = await roleInstance.doesRoleExist(roleId);
   
       if (roleExists) {
-        // Role exists, proceed with deletion
         await roleInstance.roleDelete(roleId);
         console.log(`Role with ID ${roleId} deleted successfully!`);
       } else {
